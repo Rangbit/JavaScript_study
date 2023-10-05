@@ -105,3 +105,45 @@ const testScores = {
 for (let person in testScores) {
     console.log(`${person} scored ${testScores[person]}`);
 }
+
+let total = 0;
+let scores = Object.values(testScores);
+for ( let score of scores) {
+    total += score ;
+}
+
+console.log(total / scores.length);
+
+
+function greet(firstName, lastName) {
+    console.log(`hey there, ${firstName} ${lastName[0]}.`);
+}
+
+function repeat(str, numTimes) {
+    let result = '';
+    for (let i = 0; i < numTimes; i++) {
+        result += str;
+    }
+    console.log(result);
+}
+
+function add(x, y) {
+    if ( typeof x !=='number' || typeof y !== 'number'){
+        return false;
+
+        let sum = x + y;
+        return sum;
+    }
+}
+
+function callTwice(func){
+    func();
+    func();
+}
+
+function rollDie() {
+    const roll = Math.floor(Math.random()*6)+1;
+    console.log(roll);
+}
+
+callTwice(rollDie);
