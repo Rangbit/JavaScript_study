@@ -1,0 +1,15 @@
+body {
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    
+}
+
+.p-2 {
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
