@@ -153,31 +153,144 @@ import React, { useState, useEffect, useRef } from "react";
 //   );
 // }
 
-//useClick
-const useClick = onClick => {
-  if(typeof onClick !== "function"){
-    return;
-  }
+
+// //useClick
+// const useClick = onClick => {
+//   // if(typeof onClick !== "function"){
+//   //   return;
+//   // }
+//   const element = useRef();
+//   useEffect(() => {
+//     if(element.current){
+//       element.current.addEventListener('click', onClick);
+//     }
+//     return () => {
+//       if(element.current){
+//         element.current.removeEventListener('click', onClick);
+//       }
+//     }
+//   }, []);
+//   return element;
+// }
+
+// export default function App() {
+//   const sayHello = () => console.log("say hello");
+//   const title = useClick(sayHello);
+//   return (
+//     <div className="App">
+//       <h1 ref={title}>Hi</h1>
+//     </div>
+//   );
+// }
+
+
+// // useConfirm
+// const useConfirm = (message = "", onConfirm, onCancel) => {
+//   if(!onConfirm || typeof onConfirm !== "function"){
+//     return;
+//   }
+//   if(onCancel && typeof onCancel !== "function"){
+//     return;
+//   }
+//   const consfirmAction = () => {
+//     if(window.confirm(message)){
+//       onConfirm();
+//     }else {
+//       onCancel();
+//     }
+//   };
+//   return consfirmAction;
+// };
+
+// export default function App() {
+//   const deleteWorld = () => console.log("Delete the world...");
+//   const abort = () => console.log("Aborted");
+//   const confirmDelete = useConfirm("sure?" , deleteWorld, abort);
+//   return (
+//     <div className="App">
+//       <h1>Hi</h1>
+//       <button onClick={confirmDelete}>Delete the world</button>
+//     </div>
+//   );
+// }
+
+
+// // usePreventLeave
+// const usePreventLeave = () => {
+//   const listener = event => {
+//     event.preventDefault();
+//     event.returnValue = "";
+//   }
+//   const enablePrevent = () => window.addEventListener("beforeunload", listener)
+//   const disablePrevent = () => window.removeEventListener("beforeunload", listener)
+//   return {enablePrevent, disablePrevent};
+// }
+
+// export default function App() {
+//   const {enablePrevent, disablePrevent} = usePreventLeave();
+//   return (
+//     <div className="App">
+//       <h1>Hi</h1>
+//       <button onClick={enablePrevent}>Protect</button>
+//       <button onClick={disablePrevent}>Unprotect</button>
+//     </div>
+//   );
+// }
+
+
+// // useBeforeLeave
+// const useBeforeLeave = (onBefore) => {
+//   const handle = (event) => {
+//     console.log(event);
+//     const {clientY} = event;
+//     if(clientY <= 0){
+//     onBefore();
+//     }
+//   };
+//   useEffect(() => {
+//     if(typeof onBefore !== "function") {
+//       return;
+//     }
+//     document.addEventListener("mouseleave", handle);
+//     return () => document.removeEventListener("mouseleave", handle);
+//   }, []);
+// }
+
+// export default function App() {
+//   const begForLife = () => console.log("Plz don't leave")
+//   useBeforeLeave(begForLife);
+//   return (
+//     <div className="App">
+//       <h1>Hi</h1>
+//     </div>
+//   );
+// }
+
+
+// useFadeIn 
+const useFadeIn = (duration = 1) => {
+
   const element = useRef();
   useEffect(() => {
-    if(element.current){
-      element.current.addEventListener('click', onClick);
+    if(typeof duration !== "number") {
+      return;
     }
-    return () => {
-      if(element.current){
-        element.current.removeEventListener('click', onClick);
-      }
+    if(element.current) {
+      const {current} = element;
+      current.style.transition = `opacity ${duration}s`
+      current.style.opacity = 1;
     }
-  }, []);
-  return element;
+  }, [])
+  return {ref  : element, style : {opacity : 0}};
 }
 
 export default function App() {
-  const sayHello = () => console.log("say hello");
-  const title = useClick(sayHello);
+  const fadeInH1 = useFadeIn();
+  const fadeInP = useFadeIn();
   return (
     <div className="App">
-      <h1 ref={title}>Hi</h1>
+      <h1 {...fadeInH1}>Hi</h1>
+      <p {...fadeInP}> test text </p>
     </div>
   );
 }
