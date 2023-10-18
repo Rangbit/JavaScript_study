@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import useAxios from "./useAxios";
 // import "./styles.css";
 
 // // useState
@@ -267,30 +268,236 @@ import React, { useState, useEffect, useRef } from "react";
 // }
 
 
-// useFadeIn 
-const useFadeIn = (duration = 1) => {
+// // useFadeIn 
+// const useFadeIn = (duration = 1, delay = 0) => {
 
-  const element = useRef();
-  useEffect(() => {
-    if(typeof duration !== "number") {
-      return;
-    }
-    if(element.current) {
-      const {current} = element;
-      current.style.transition = `opacity ${duration}s`
-      current.style.opacity = 1;
-    }
-  }, [])
-  return {ref  : element, style : {opacity : 0}};
-}
+//   const element = useRef();
+//   useEffect(() => {
+//     if(typeof duration !== "number" || typeof delay !== "number") {
+//       return;
+//     }
+//     if(element.current) {
+//       const {current} = element;
+//       current.style.transition = `opacity ${duration}s ease-in-out ${delay}s`
+//       current.style.opacity = 1;
+//     }
+//   }, [])
+//   return {ref  : element, style : {opacity : 0}};
+// }
 
+// export default function App() {
+//   const fadeInH1 = useFadeIn(2,2);
+//   const fadeInP = useFadeIn(5,5);
+//   return (
+//     <div className="App">
+//       <h1 {...fadeInH1}>Hi</h1>
+//       <p {...fadeInP}> test text </p>
+//     </div>
+//   );
+// }
+
+
+// // useNetwork
+// const useNetwork = onChange => {
+//   const [status, setStatus] = useState(navigator.onLine);
+//   const handleChange = () => {
+//     if ( typeof onChange === "function"){
+//       onChange(navigator.onLine);
+//     }
+//     setStatus(navigator.onLine);
+//   };
+//   useEffect(() => {
+//     window.addEventListener("online", handleChange);
+//     window.addEventListener("offline", handleChange);
+//     return () => {
+//       window.removeEventListener("online", handleChange);
+//       window.removeEventListener("offline", handleChange);
+//     };
+//   }, []);
+//   return status;
+// };
+
+
+// export default function App() {
+//   const handleNetworkChange = online => {
+//     console.log(online? "handle online" : "handle offline");
+//   }
+//   const onLine = useNetwork(handleNetworkChange);
+//   return (
+//     <div className="App">
+//       <h1>{onLine ? "Online" : "Offline"}</h1>
+//     </div>
+//   );
+// }
+
+
+// // useScroll
+// const useScroll = () => {
+//   const [state, setState] = useState({
+//     x : 0, 
+//     y : 0
+//   });
+//   const onScroll = () => {
+//     console.log("x : ", window.scrollX, "y :" , window.scrollY);
+//     setState({x : window.scrollX, y : window.scrollY});
+//   }
+//   useEffect(() => {
+//     window.addEventListener("scroll", onScroll);
+//     return () => window.removeEventListener("scroll", onScroll);
+//   }, []);
+//   return state;
+// }
+
+// export default function App() {
+//   const {y} = useScroll();
+//   return (
+//     <div className="App" style={{height : "1000vh"}}>
+//       <h1 style={{position : "fixed", color : y > 100 ? "red" : "blue"}}>hi</h1>
+//     </div>
+//   );
+// }
+
+
+// // useFullscreen
+// const useFullscreen = (callback) => {
+//   const element = useRef();
+//   const trigerFull = () => {
+//     if (element.current){
+//       element.current.requestFullscreen();
+//       if(callback && typeof callback === "function"){
+//         callback(true);
+//       }
+//     }
+//   };
+//   const exitFull = () => {
+//     document.exitFullscreen();
+//     if(callback && typeof callback === "function"){
+//       callback(false);
+//     }
+//   }
+//   return {element, trigerFull, exitFull};
+// };
+
+// export default function App() {
+//   const onFullS = (isFull) => {
+//     console.log(isFull ? "We are full" : "We are small");
+//   }
+//   const {element, trigerFull, exitFull} = useFullscreen(onFullS);
+//   return (
+//     <div className="App" style={{height : "1000vh"}}>
+//       <div ref={element}>
+//         <img width="250" src="https://g-grafolio.pstatic.net/20220629_289/165647589293501sOx_JPEG/%BE%F0%B4%F5%B4%F5%BE%BE_7%BF%F9_%B4%DE%B7%C2_%BC%D2%B1%DD%C0%CC_%B1%E2%BA%BB%C7%FC.jpg"></img>
+//         <div class="Exit-btn">
+//           <button onClick={exitFull}>Exit fullscreen</button>
+//         </div>
+//       </div>
+//       <div class="Make-btn">
+//         <button onClick={trigerFull}>Make fullscreen</button>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+// // useFullscreen 브라우저 최적화
+// const useFullscreen = (callback) => {
+//   const element = useRef();
+//   const runCb = isFull => {
+//     if(callback && typeof callback === "function"){
+//       callback(isFull);
+//     }
+//   }
+//   const trigerFull = () => {
+//     if(element.current.requestFullscreen) {
+//       document.requestFullscreen();
+//     }else if(element.current.requestFullscreen) {
+//       document.mozRequestFullScreen();
+//     }else if(element.current.requestFullscreen) {
+//       document.webkitRequestFullScreen();
+//     }else if(element.current.requestFullscreen) {
+//       document.msRequestFullScreen();
+//     }
+//     runCb(true);
+//   };
+//   const exitFull = () => {
+//     document.exitFullscreen();
+//     if(document.exitFullscreen) {
+//       document.exitFullscreen();
+//     }else if(document.exitFullscreen) {
+//       document.mozCancelFullScreen();
+//     }else if(document.exitFullscreen) {
+//       document.webkitExitFullscreen();
+//     }else if(document.exitFullscreen) {
+//       document.msExitFullScreen();
+//     }
+//     runCb(false);
+//   };
+//   return {element, trigerFull, exitFull};
+// };
+
+// export default function App() {
+//   const onFullS = (isFull) => {
+//     console.log(isFull ? "We are full" : "We are small");
+//   }
+//   const {element, trigerFull, exitFull} = useFullscreen(onFullS);
+//   return (
+//     <div className="App" style={{height : "1000vh"}}>
+//       <div ref={element}>
+//         <img width="250" src="https://g-grafolio.pstatic.net/20220629_289/165647589293501sOx_JPEG/%BE%F0%B4%F5%B4%F5%BE%BE_7%BF%F9_%B4%DE%B7%C2_%BC%D2%B1%DD%C0%CC_%B1%E2%BA%BB%C7%FC.jpg"></img>
+//         <div class="Exit-btn">
+//           <button onClick={exitFull}>Exit fullscreen</button>
+//         </div>
+//       </div>
+//       <div class="Make-btn">
+//         <button onClick={trigerFull}>Make fullscreen</button>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+// //useNotification
+// const useNotification = (title, options) => {
+//   if(!("Notification" in window)){
+//     return;
+//   }
+//   const fireNotif = () => {
+//     if(Notification.permission !== "granted"){
+//       Notification.requestPermission().then(permission => {
+//         if(permission === "granted"){
+//           new Notification(title, options);
+//         }else { 
+//           return;
+//         }
+//       })
+//     }else {
+//       new Notification(title, options);
+//     }
+//   };
+//   return fireNotif;
+// }
+ 
+// export default function App() {
+//   const triggerNotif = useNotification("Can I steal?", {body : "I love it!"})
+//   return (
+//     <div className="App" style={{height : "1000vh"}}>
+//       <button onClick={triggerNotif}>Hello</button>
+//     </div>
+//   );
+// }
+
+
+// useAxios
 export default function App() {
-  const fadeInH1 = useFadeIn();
-  const fadeInP = useFadeIn();
+  const {loading, data, error, refetch} = useAxios({
+    url : "https://yts.mx/api/v2/list_movies.json"
+  });
+  console.log(`Loading : ${loading}\nError : ${error}\nData : ${data}`);
   return (
-    <div className="App">
-      <h1 {...fadeInH1}>Hi</h1>
-      <p {...fadeInP}> test text </p>
+    <div className="App" style={{height : "1000vh"}}>
+      <h1>{data && data.status}</h1>
+      <h2>{loading && "Loading"}</h2>
+      <button onClick={refetch}>refetch</button>
     </div>
   );
 }
